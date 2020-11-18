@@ -9,6 +9,108 @@ import { PROPS_AUTHEN, PROPS_PROFILE, PROPS_NICKNAME } from '../types';
 const apiUrl = process.env.REACT_APP_DEV_API_URL;
 
 
+// ログインした際にJWTの認証トークンを返す非同期関数
+export const fetchAsyncLogin = createAsyncThunk (
+    "auth/post",
+    //reactから引数を受け取り値をauthen格納する(types.tsで定義したデータ型とあっているかの確認を行う)
+    async (authen: PROPS_AUTHEN) => {
+        //バックエンドで作成したAPIのURLにPostメソッドを送って認証トークンを取得する
+        const res = await axios.post(`${apiUrl}authen/jwt/create/`, authen, {
+            //Postメソッドの場合headersに属性を記載する必要がある
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
+        //認証トークンが返り値として渡される
+        return res.data;
+    }
+);
+
+
+// 新規登録を行う際のJWTトークンを取得してくる非同期関数
+export const fetchAsyncRegister = createAsyncThunk (
+    "auth/register",
+    async (auth: PROPS_AUTHEN) => {
+        const res = await axios.post(`${apiUrl}api/register/`, auth, {
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
+        return res.data;
+    }
+);
+
+
+// 新規登録を行う非同期関数
+export const fetchAsyncCreateProf = createAsyncThunk (
+    "profile/post",
+    async (nickName: PROPS_NICKNAME) => {
+        const res = await axios.post(`${apiUrl}api/profile/`, nickName, {
+            // JWTの認証トークンがないとプロフィールの更新ができない仕組みになっているのでMODヘッダーでやったように
+            // ヘッダーにJWTの認証トークンを含めておく必要がある
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `JWT ${localStorage.localJWT}`,
+            },
+        });
+        return res.data;
+    }
+);
+
+
+// ログイン後プロフィールを変更するための非同期関数
+export const fetchAsyncUpdateProf = createAsyncThunk (
+    "profile/put",
+    async (profile: PROPS_PROFILE) => {
+        //入力値を格納するuploadDataをFormDataから作成
+        const uploadData = new FormData();
+        //appendで入力された値をuploadDataに格納している
+        uploadData.append("nickName", profile.nickName);
+        // avatar画像はnullも許容するので入力されていれば格納する
+        profile.avatar && uploadData.append("avatar", profile.avatar, profile.avatar.name);
+        //更新なのでputメソッドを使用、どのUserのProfileを更新するかをURLに含める必要がある
+        const res  = await axios.put(`${apiUrl}api/profile/${profile.id}/`, uploadData, {
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `JWT ${localStorage.localJWT}`,
+            },
+        });
+        return res.data;
+    }
+);
+
+
+// ログインしているユーザーの自身のProfileを取得する非同期関数
+export const fetchAsyncGetMyProf = createAsyncThunk(
+    "profile/get", async () => {
+        const res = await axios.get(`${apiUrl}api/myprofile/`, {
+            headers: {
+                //自身のProfileの取得は認証が必要なのでヘッダーにJWTを渡している
+                Authorization: `JWT ${localStorage.localJWT}`,
+            },
+        });
+        //バックエンドのMyProfileListViewの方でfilterを使ってList形式で返しているので
+        // 一つであっても配列状に帰ってきてしまうので一番初めの要素を取り出している
+        return res.data[0];
+    }
+);
+
+
+// 存在するプロフィールを全て取得する非同期関数
+export const fetchAsyncGetProfs = createAsyncThunk(
+    "profiles/get",
+    async () => {
+        const res = await axios.get(`${apiUrl}api/profile/`, {
+            headers: {
+                Authorization: `JWT ${localStorage.localJWT}`,
+            },
+        });
+        return res.data;
+    }
+);
+
+
+
 export const authSlice = createSlice({
   name: 'auth',
   initialState: {
@@ -75,6 +177,37 @@ export const authSlice = createSlice({
         editNickName(state, action) {
             state.myprofile.nickName = action.payload;
         },
+    },
+    //非同期関数が成功した場合の後処理をextraReducersとして追記しておく
+    extraReducers: (builder) => {
+        // fulfilledは正常終了なので非同期関数のfetchAsyncLoginが正常終了した場合中身が実行される
+        builder.addCase(fetchAsyncLogin.fulfilled, (state, action) => {
+            //ログインが成功した時ローカルストレージにJWTを格納する
+            //action.payloadは非同期関数で返していた内容を受け取る事ができる
+            localStorage.setItem("localJWT", action.payload.access);
+        });
+        //新しく作ったプロフィールが渡されてくるのでpayloadに格納している
+        builder.addCase(fetchAsyncCreateProf.fulfilled, (state, action) => {
+            state.myprofile = action.payload;
+        });
+        // ログインしているUserのProfileがaction.payloadに入っているのでmyprofileに上書きしている
+        builder.addCase(fetchAsyncGetMyProf.fulfilled, (state, action) => {
+            state.myprofile = action.payload;
+        });
+        //fetchAsyncGetProfsで取得したUser達の情報がaction.payloadに入っているのでをprofilesに入れている
+        builder.addCase(fetchAsyncGetProfs.fulfilled, (state, action) => {
+            state.profiles = action.payload;
+        });
+        //プロフィールを更新した後の非同期間酢の後処理
+        builder.addCase(fetchAsyncUpdateProf.fulfilled, (state, action) => {
+            // 更新後のProfileのデータがaction.payloadに入っているのでmyprofileに入れている
+            state.myprofile = action.payload;
+            // SPAを実現するため今更新したプロフィールデータをProfilesデータをmapで展開して
+            // 今更新したProfileのデータと一致するidのProfileを更新するようにする
+            state.profiles = state.profiles.map((prof) => 
+                prof.id === action.payload.id ? action.payload : prof
+            );
+        });
     },
 });
 
