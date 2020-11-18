@@ -220,7 +220,13 @@ export const {
     editNickName,
 } = authSlice.actions;
 
-export const selectCount = (state: RootState) => state.counter.value;
+//authはstoreのなかに定義したもの
+export const selectIsLoadingAuth = (state: RootState) => state.auth.isLoadingAuth;
+export const selectOpenLogin = (state: RootState) => state.auth.openLogin;
+export const selectOpenSignup = (state: RootState) => state.auth.openSignup;
+export const selectOpenProfile = (state: RootState) => state.auth.openProfile;
+export const selectProfile = (state: RootState) => state.auth.myprofile;
+export const selectProfiles = (state: RootState) => state.auth.profiles;
 
 export default authSlice.reducer;
 
