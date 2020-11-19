@@ -58,12 +58,12 @@ export interface PROPS_COMMENT {
 // ーーーーーーReview.tsxで使用するデータ型ーーーーーーー
 export interface PROPS_REVIEW {
     reviewId: number;
-    LoginId: number;
+    loginId: number;
     userReview: number;
     title: string;
     bookName: string;
     content: string;
-    imageURL: string | null;
+    imageUrl: string | null;
     likedUser: number[];
 }
 

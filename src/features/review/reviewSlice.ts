@@ -211,7 +211,7 @@ export const {
 
 //reviewはstoreのなかに定義したもの
 //定義したstateを外でも使えるようにしておく
-export const selectIsLoadingAuth = (state: RootState) => state.review.isLoadingReview;
+export const selectIsLoadingReview = (state: RootState) => state.review.isLoadingReview;
 export const selectOpenNewReview = (state: RootState) => state.review.openNewReview;
 export const selectReviews = (state: RootState) => state.review.reviews;
 export const selectComments = (state: RootState) => state.review.comments;
