@@ -15,7 +15,7 @@ export const fetchAsyncLogin = createAsyncThunk (
     //reactから引数を受け取り値をauthen格納する(types.tsで定義したデータ型とあっているかの確認を行う)
     async (authen: PROPS_AUTHEN) => {
         //バックエンドで作成したAPIのURLにPostメソッドを送って認証トークンを取得する
-        const res = await axios.post(`${apiUrl}authen/jwt/create/`, authen, {
+        const res = await axios.post(`${apiUrl}authen/jwt/create`, authen, {
             //Postメソッドの場合headersに属性を記載する必要がある
             headers: {
                 "Content-Type": "application/json",
