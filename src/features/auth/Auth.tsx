@@ -4,8 +4,10 @@ import { useSelector, useDispatch } from "react-redux";
 import styles from './Auth.module.css';
 import Modal from 'react-modal';
 import { Formik } from 'formik';
-import { object, string } from 'yup';
+import * as Yup from 'yup';
 import {TextField, Button, CircularProgress } from '@material-ui/core';
+
+import { fetchAsyncGetReviews, fetchAsyncGetComments } from "../review/reviewSlice"
 
 import {
     // useSelect関係
@@ -84,8 +86,8 @@ const Auth: React.FC = () => {
                             // プロフィールの一覧を取得する
                             await dispatch(fetchAsyncGetProfs());
 
-                            // await dispatch(fetchAsyncGetReviews());
-                            // await dispatch(fetchAsyncGetComments()):
+                            await dispatch(fetchAsyncGetReviews());
+                            await dispatch(fetchAsyncGetComments());
 
                             // 自分のプロフィールを取得する
                             await dispatch(fetchAsyncGetMyProf());
@@ -97,11 +99,11 @@ const Auth: React.FC = () => {
                         await dispatch(setCloseSignup());
                     }}
                     //バリデーションの設定
-                    validationSchema={object().shape({
-                        email: string()
+                    validationSchema={Yup.object().shape({
+                        email: Yup.string()
                             .email("emailのフォーマットが間違っています")
                             .required("emailを入力してください"),
-                        password: string()
+                        password: Yup.string()
                             .required("passwordを入力してください")
                             .min(4, "4文字以上で入力してください"),
                     })}
@@ -193,18 +195,20 @@ const Auth: React.FC = () => {
                         const result = await dispatch(fetchAsyncLogin(values));
                         if (fetchAsyncLogin.fulfilled.match(result)) {
                             await dispatch(fetchAsyncGetProfs());
-                            // await dispatch(fetchAsyncGetReviews());
-                            // await dispatch(fetchAsyncGetComments()):
+
+                            await dispatch(fetchAsyncGetReviews());
+                            await dispatch(fetchAsyncGetComments());
+
                             await dispatch(fetchAsyncGetMyProf());
                         }
                         await dispatch(fetchCredEnd());
-                        await dispatch(setCloseSignup());
+                        await dispatch(setCloseLogin());
                     }}
-                    validationSchema={object().shape({
-                        email: string()
+                    validationSchema={Yup.object().shape({
+                        email: Yup.string()
                             .email("emailのフォーマットが間違っています")
                             .required("emailを入力してください"),
-                        password: string()
+                        password: Yup.string()
                             .required("passwordを入力してください")
                             .min(4, "4文字以上で入力してください"),
                     })}
@@ -260,8 +264,8 @@ const Auth: React.FC = () => {
                                     <span
                                         className={styles.auth_text}
                                         onClick={async () => {
-                                            await dispatch(setCloseLogin());
                                             await dispatch(setOpenSignup());
+                                            await dispatch(setCloseLogin());
                                         }}
                                     >
                                         新規登録はこちらから！

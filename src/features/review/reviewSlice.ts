@@ -59,33 +59,43 @@ export const fetchAsyncPatchLiked = createAsyncThunk (
         currentLiked.forEach((current) => {
             // いいねしているUserを一人ずつ比べて同じIdを持つ人がいる場合、
             // 既にその人はいいねを押している人なのでいいねボタンを外す処理を行う
-            if (current === liked.id) {
+            if (current === liked.new) {
                 isOverlapped = true;
             // いいねしているUserを一人ずつ比べて同じIdを持つ人がいない場合、
             // いいねをしているユーザーの中にいいねをしたUserを加える処理を行う
             } else {
-                likedData.append("liked", String(current))
+                likedData.append("likedUser", String(current))
             }
         });
 
         // isOverlappedがfalseの時(まだいいねしていない時)
         // そのままいいねしたUserを加える
         if (!isOverlapped) {
-            likedData.append("liked", String(liked.new));
+            likedData.append("likedUser", String(liked.new));
+
+
+        // ！！！！！！！ここは実装できていない！！！！！！！！
+
         // isOverlappedがtrueの時(既にいいねしていていいねしているUserが１人の時)
         // （いいねUserが自分一人の時にいいねを押す（解除する）といいねしているUserがいなくなる）
         } else if (currentLiked.length === 1) {
-            likedData.append("title", liked.title);
+            console.log('開始');
+            likedData.append("title", liked.title);      // ←←←←←←←ここが怪しい
+            likedData.append("bookName", liked.bookName);      // ←←←←←←←ここが怪しい
+            likedData.append("content", liked.content);      // ←←←←←←←ここが怪しい
+            console.log('終了');
             const res = await axios.put(`${apiUrlReview}${liked.id}/`, likedData, {
                 headers: {
                     "Content-Type": "application/json",
                     Authorization: `JWT ${localStorage.localJWT}`,
                 },
             });
+            console.log('終了②');
             return res.data;
+
         }
         // isOverlappedがtrueの時いいねしたUserをいいねUserからはずす
-        const res = await axios.patch(`${apiUrlReview}${liked.id}`, likedData, {
+        const res = await axios.patch(`${apiUrlReview}${liked.id}/`, likedData, {
             headers: {
                 "Content-Type": "application/json",
                 Authorization: `JWT ${localStorage.localJWT}`,
@@ -136,7 +146,7 @@ export const reviewSlice = createSlice({
                 bookName: "",
                 content: "",
                 userReview: 0,
-                createdAt: "",
+                created_at: "",
                 img: "",
                 likedUser: [0],
             },
@@ -196,7 +206,7 @@ export const reviewSlice = createSlice({
             return {
                 ...state,
                 reviews: state.reviews.map((review) => 
-                    review.id === action.payload.id ? action.payload : review
+                    review.id === action.payload.id ? action.payload : review,
                 )
             }
         })

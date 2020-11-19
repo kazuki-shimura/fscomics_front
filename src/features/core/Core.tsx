@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import Auth from '../auth/Auth';
+import Review from '../review/Review';
 
 import styles from "./Core.module.css";
 import { useSelector, useDispatch } from "react-redux";
@@ -55,15 +56,6 @@ const StyledBadge = withStyles((theme) => ({
     },
   }))(Badge);
   
-//   const SmallAvatar = withStyles((theme) => ({
-//     root: {
-//       width: 22,
-//       height: 22,
-//       border: `2px solid ${theme.palette.background.paper}`,
-//     },
-//   }))(Avatar);
-
-
 
 const Core: React.FC = () => {
     const dispatch: AppDispatch = useDispatch();
@@ -107,7 +99,7 @@ const Core: React.FC = () => {
                                     dispatch(setCloseProfile());
                                 }}
                             >
-                                <MdAddAPhoto>レビュー</MdAddAPhoto>
+                                <MdAddAPhoto />
                             </button>
                             <div className={styles.core_logout}>
                                 {( isLoadingReview || isLoadingAuth ) && <CircularProgress />}
@@ -164,8 +156,36 @@ const Core: React.FC = () => {
                     )
                 }
             </div>
+            {/* ログインしている人だけ見れるようにプロフィールのnickName属性を取ってきて
+            この属性が存在すれば表示するようにする */}
+            {
+                profile?.nickName && (
+                    <>
+                        <div className={styles.core_reviews}>
+                            <Grid container spacing={4}>
+                                {
+                                    reviews.slice(0).reverse().map((review) => (
+                                        <Grid key={review.id} item xs={12} md={4}>
+                                            <Review
+                                                reviewId={review.id}
+                                                title={review.title}
+                                                bookName={review.bookName}
+                                                content={review.content}
+                                                loginId={profile.userProfile}
+                                                userReview={review.userReview}
+                                                imageUrl={review.img}
+                                                likedUser={review.likedUser}
+                                            />
+                                        </Grid>
+                                    ))
+                                }
+                            </Grid>
+                        </div>
+                    </>
+                )
+            }
         </div>
     )
 }
 
-export default Core
+export default Core;

@@ -44,6 +44,8 @@ export interface PROPS_NEWREVIEW {
 export interface PROPS_LIKED {
     id: number;
     title: string;
+    bookName: string;    // bookNameは必須項目でputメソッドの時に必要
+    content: string;     // contentは必須項目でputメソッドの時に必要
     current: number[];
     new: number;
 }
@@ -63,7 +65,7 @@ export interface PROPS_REVIEW {
     title: string;
     bookName: string;
     content: string;
-    imageUrl: string | null;
+    imageUrl: string;
     likedUser: number[];
 }
 
