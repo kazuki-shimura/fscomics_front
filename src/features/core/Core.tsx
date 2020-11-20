@@ -25,6 +25,7 @@ import {
     setOpenNewReview, setCloseNewReview,
     fetchAsyncGetReviews, fetchAsyncGetComments
 } from "../review/reviewSlice";
+import EditProfile from './EditProfile';
 
 
 const StyledBadge = withStyles((theme) => ({
@@ -85,6 +86,7 @@ const Core: React.FC = () => {
     return (
         <div>
             <Auth />
+            <EditProfile />
             <div className={styles.core_header}>
                 <h1 className={styles.core_title}>FSComics</h1>
                 {

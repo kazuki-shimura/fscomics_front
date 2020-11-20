@@ -73,24 +73,18 @@ export const fetchAsyncPatchLiked = createAsyncThunk (
         if (!isOverlapped) {
             likedData.append("likedUser", String(liked.new));
 
-
-        // ！！！！！！！ここは実装できていない！！！！！！！！
-
         // isOverlappedがtrueの時(既にいいねしていていいねしているUserが１人の時)
         // （いいねUserが自分一人の時にいいねを押す（解除する）といいねしているUserがいなくなる）
         } else if (currentLiked.length === 1) {
-            console.log('開始');
-            likedData.append("title", liked.title);      // ←←←←←←←ここが怪しい
-            likedData.append("bookName", liked.bookName);      // ←←←←←←←ここが怪しい
-            likedData.append("content", liked.content);      // ←←←←←←←ここが怪しい
-            console.log('終了');
+            likedData.append("title", liked.title);      
+            likedData.append("bookName", liked.bookName);      
+            likedData.append("content", liked.content);   
             const res = await axios.put(`${apiUrlReview}${liked.id}/`, likedData, {
                 headers: {
                     "Content-Type": "application/json",
                     Authorization: `JWT ${localStorage.localJWT}`,
                 },
             });
-            console.log('終了②');
             return res.data;
 
         }
