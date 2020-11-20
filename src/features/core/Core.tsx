@@ -1,6 +1,4 @@
 import React, { useEffect } from 'react';
-import Auth from '../auth/Auth';
-import Review from '../review/Review';
 
 import styles from "./Core.module.css";
 import { useSelector, useDispatch } from "react-redux";
@@ -11,6 +9,7 @@ import { Button, Grid, Avatar, Badge, CircularProgress } from "@material-ui/core
 //カメラマークの絵文字なのであとでレビューように変えておく必要がある
 import { MdAddAPhoto } from "react-icons/md";
 
+import Auth from '../auth/Auth';
 import {
     editNickName, selectProfile, selectIsLoadingAuth,
     setOpenLogin, setCloseLogin, 
@@ -19,13 +18,16 @@ import {
     fetchAsyncGetMyProf, fetchAsyncGetProfs, selectOpenProfile,
 } from "../auth/authSlice";
 
+import Review from '../review/Review';
 import {
     selectReviews, 
     selectIsLoadingReview,
     setOpenNewReview, setCloseNewReview,
     fetchAsyncGetReviews, fetchAsyncGetComments
 } from "../review/reviewSlice";
+
 import EditProfile from './EditProfile';
+import NewReview from './NewReview';
 
 
 const StyledBadge = withStyles((theme) => ({
@@ -87,6 +89,7 @@ const Core: React.FC = () => {
         <div>
             <Auth />
             <EditProfile />
+            <NewReview />
             <div className={styles.core_header}>
                 <h1 className={styles.core_title}>FSComics</h1>
                 {

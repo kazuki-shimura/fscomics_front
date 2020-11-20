@@ -76,6 +76,10 @@ const Review: React.FC<PROPS_REVIEW> = ({
                     <Avatar className={styles.review_avatar} src={prof[0]?.avatar} />
                     <h3>{prof[0]?.nickName}</h3>
                 </div>
+                <div>
+                    {title}
+                </div>
+                <Divider />
                 <img className={styles.review_image} src={imageUrl} alt="" />
                 <h4 className={styles.review_text}>
                     <Checkbox 
@@ -85,7 +89,7 @@ const Review: React.FC<PROPS_REVIEW> = ({
                         checked={likedUser.some((like) => like === loginId)}
                         onChange={handlerLiked}
                     />
-                    <strong> {prof[0]?.nickName} </strong> {title}
+                    <strong> {prof[0]?.nickName} </strong> 
                     <AvatarGroup max={7}>
                         {likedUser.map((like) => (
                             <Avatar
@@ -95,11 +99,22 @@ const Review: React.FC<PROPS_REVIEW> = ({
                             />
                         ))}
                     </AvatarGroup>
+                    <Divider />
+                    <br />
+                    <div>
+                        漫画名：{bookName}
+                        <br />
+                        <br />
+                        {content}
+                    </div>
                 </h4>
                 <Divider />
 
                 {/* コメントしたユーザーを表示する   OK */}
                 <div className={styles.review_comments}>
+                    コメント一覧
+                    <br />
+                    <br />
                     {commentsOnReview.map((comment) => (
                         <div key={comment.id} className={styles.review_comment}>
                             <Avatar src={
