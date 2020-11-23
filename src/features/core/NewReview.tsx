@@ -12,7 +12,7 @@ import {
 } from "../review/reviewSlice";
 
 import { Button, TextField, IconButton } from "@material-ui/core";
-import { MdAddAPhoto } from "react-icons/md";
+import RateReviewIcon from '@material-ui/icons/RateReview';
 
 
 const customStyles = {
@@ -77,7 +77,7 @@ const NewReview: React.FC = () => {
 
                     <br />
                     <TextField
-                        placeholder="レビューのタイトル"
+                        placeholder="レビュータイトル"
                         type="text"
                         onChange={(e) => setTitle(e.target.value)}
                     />
@@ -107,7 +107,7 @@ const NewReview: React.FC = () => {
 
                     <br />
                     <IconButton onClick={handlerEditPicture}>
-                        <MdAddAPhoto />
+                        <RateReviewIcon />
                     </IconButton>
 
                     <br />
@@ -117,7 +117,7 @@ const NewReview: React.FC = () => {
                         color="primary"
                         onClick={newReview}
                     >
-                        New post
+                        レビューする
                     </Button>
                 </form>
             </Modal>

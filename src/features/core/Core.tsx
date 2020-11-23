@@ -6,8 +6,7 @@ import { AppDispatch } from "../../app/store";
 
 import { withStyles } from "@material-ui/core/styles";
 import { Button, Grid, Avatar, Badge, CircularProgress } from "@material-ui/core"
-//カメラマークの絵文字なのであとでレビューように変えておく必要がある
-import { MdAddAPhoto } from "react-icons/md";
+import RateReviewIcon from '@material-ui/icons/RateReview';
 
 import Auth from '../auth/Auth';
 import {
@@ -104,7 +103,7 @@ const Core: React.FC = () => {
                                     dispatch(setCloseProfile());
                                 }}
                             >
-                                <MdAddAPhoto />
+                                <RateReviewIcon />
                             </button>
                             <div className={styles.core_logout}>
                                 {( isLoadingReview || isLoadingAuth ) && <CircularProgress />}
