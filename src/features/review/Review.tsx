@@ -148,7 +148,7 @@ const Review: React.FC<PROPS_REVIEW> = ({
                         type="submit"
                         onClick={reviewComment}
                     >
-                        レビュー
+                        comment
                     </button>
                 </form>
             </div>

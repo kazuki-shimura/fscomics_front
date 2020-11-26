@@ -60,8 +60,6 @@ const NewReview: React.FC = () => {
     };
 
 
-
-
     return (
         <>
             <Modal
@@ -117,7 +115,7 @@ const NewReview: React.FC = () => {
                         color="primary"
                         onClick={newReview}
                     >
-                        レビューする
+                        review
                     </Button>
                 </form>
             </Modal>
